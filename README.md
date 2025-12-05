@@ -113,7 +113,7 @@ YYYY-MM-DD
 
 ### 2. Documentación (30%)
 - **2 ADRs** en formato Markdown (carpeta `/docs`)
-- **Diagrama simple** de arquitectura hexagonal (puede ser a mano o digital)
+- **Diagrama simple** de arquitectura hexagonal
 - README explicando brevemente los patrones
 
 ---
