@@ -31,7 +31,7 @@ Desarrollar **"Banco Digital"**, un sistema bancario simple que permita:
 
 ## 🏛️ REQUISITOS ARQUITECTÓNICOS
 
-### Arquitectura Obligatoria: HEXAGONAL (Ports & Adapters)
+### Arquitectura: HEXAGONAL (Ports & Adapters)
 
 **Estructura requerida:**
 ```
