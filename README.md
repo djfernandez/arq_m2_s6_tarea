@@ -108,7 +108,6 @@ YYYY-MM-DD
 ### 1. Código Fuente (70%)
 - Código en repositorio Git
 - Estructura hexagonal clara
-- Mínimo **5 pruebas unitarias**
 - README con instrucciones básicas de ejecución
 
 ### 2. Documentación (30%)
@@ -127,7 +126,6 @@ YYYY-MM-DD
 | Patrón Singleton (1 implementación) | 15% |
 | ADRs ( documento ) | 15% |
 | Funcionalidad completa | 10% |
-| Testing (5 tests) | 5% |
-| Documentación | 5% |
+| Documentación | 10% |
 
 ---
