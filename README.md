@@ -52,7 +52,7 @@ src/
 
 ```
 
-**Regla crítica:** El dominio NO debe depender de adapters.
+**Regla crítica:** El domain NO debe depender de adapters.
 
 ---
 
