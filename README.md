@@ -13,7 +13,7 @@ Desarrollar **"Banco Digital"**, un sistema bancario simple que permita:
 
 ---
 
-##  REQUISITOS FUNCIONALES (Simplificados)
+##  REQUISITOS FUNCIONALES
 
 ### 1. Gestión Básica de Cuentas
 - Crear cuenta (nombre, saldo inicial)
