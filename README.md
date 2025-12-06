@@ -64,7 +64,7 @@ src/
 
 ---
 
-##  ADRs OBLIGATORIOS (mínimo 2)
+##  ADRs OBLIGATORIOS (mínimo 1)
 
 Documentar decisiones arquitectónicas en formato Markdown:
 
