@@ -1,0 +1,33 @@
+@baseUrl = http://localhost:8080/api
+
+### Listar todo
+GET {{baseUrl}}/clientes
+content-type: application/json
+
+### Buscar por id
+GET {{baseUrl}}/clientes/3
+content-type: application/json
+
+### Crear nuevo cliente
+POST {{baseUrl}}/clientes HTTP/1.1
+content-type: application/json
+
+{
+    "nombre": "Daniel Santivanez",
+    "documento": "10101010",
+    "email": "daniel.santivanez@example.com"
+}
+
+### Actualizar cliente existente
+PUT {{baseUrl}}/clientes/6 HTTP/1.1
+content-type: application/json
+
+{
+    "nombre": "Daniel Santivanez Garcia",
+    "documento": "10101010",
+    "email": "daniel.santivanez@example.com"
+}
+
+### Eliminar por id
+DELETE {{baseUrl}}/clientes/6
+content-type: application/json
