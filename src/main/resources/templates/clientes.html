@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion de Clientes</title>
+    <link rel="stylesheet" th:href="@{/css/clientes.css}">
+</head>
+<body>
+    <main class="page">
+        <header class="hero">
+            <h1>Gestion de Clientes</h1>
+            <p>Busca clientes, registra nuevos y revisa el listado general.</p>
+        </header>
+
+        <section class="card toolbar">
+            <div>
+                <h2>Buscar cliente</h2>
+                <p>Filtra por nombre para encontrar un cliente especifico.</p>
+            </div>
+            <form method="get" th:action="@{/clientes}" class="search-form">
+                <input type="text" name="nombre" placeholder="Ingresa el nombre del cliente" th:value="${filtroNombre}">
+                <button type="submit">Buscar</button>
+                <a class="secondary-btn" th:href="@{/clientes}">Limpiar</a>
+            </form>
+            <button type="button" class="primary-btn" id="open-create-modal">+ Crear nuevo cliente</button>
+        </section>
+
+        <section class="card">
+            <p class="message ok" th:if="${successMessage}" th:text="${successMessage}"></p>
+            <p class="message error" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+        </section>
+
+        <dialog id="create-client-modal" class="modal">
+            <div class="modal-head">
+                <h2>Nuevo cliente</h2>
+                <button type="button" class="close-btn" id="close-create-modal" aria-label="Cerrar">X</button>
+            </div>
+            <form method="post" th:action="@{/clientes}" th:object="${clienteForm}" class="create-form">
+                <label>
+                    Nombre
+                    <input type="text" th:field="*{nombre}" required minlength="3">
+                </label>
+                <label>
+                    Email
+                    <input type="email" th:field="*{email}" required>
+                </label>
+                <label>
+                    Documento
+                    <input type="text" th:field="*{documento}" required pattern="[0-9]{8,15}">
+                </label>
+                <button type="submit">Guardar cliente</button>
+            </form>
+        </dialog>
+
+        <section class="card" id="listado-clientes">
+            <h2>Listado de clientes</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nombre</th>
+                            <th>Email</th>
+                            <th>Documento</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(clientes)}">
+                            <td colspan="6">No hay clientes registrados.</td>
+                        </tr>
+                        <tr th:each="cliente : ${clientes}">
+                            <td th:text="${cliente.id}">1</td>
+                            <td th:text="${cliente.nombre}">Nombre</td>
+                            <td th:text="${cliente.email}">email@correo.com</td>
+                            <td th:text="${cliente.documento}">12345678</td>
+                            <td th:text="${cliente.estado}">ACTIVO</td>
+                            <td>
+                                <details class="edit-details">
+                                    <summary class="action-btn edit-btn">Editar</summary>
+                                    <form method="post" th:action="@{/clientes/{id}/editar(id=${cliente.id})}" class="inline-edit-form">
+                                        <input type="text" name="nombre" th:value="${cliente.nombre}" required minlength="3">
+                                        <input type="email" name="email" th:value="${cliente.email}" required>
+                                        <input type="text" name="documento" th:value="${cliente.documento}" required pattern="[0-9]{8,15}">
+                                        <button type="submit" class="action-btn save-btn">Guardar</button>
+                                    </form>
+                                </details>
+                                <form method="post" th:action="@{/clientes/{id}/eliminar(id=${cliente.id})}" class="inline-delete-form"
+                                      onsubmit="return confirm('Deseas eliminar al cliente ' + this.dataset.nombre + '?');"
+                                      th:attr="data-nombre=${cliente.nombre}">
+                                    <button type="submit" class="action-btn delete-btn">Eliminar</button>
+                                </form>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <script>
+        const openCreateModalBtn = document.getElementById('open-create-modal');
+        const closeCreateModalBtn = document.getElementById('close-create-modal');
+        const createModal = document.getElementById('create-client-modal');
+
+        if (openCreateModalBtn && createModal) {
+            openCreateModalBtn.addEventListener('click', () => createModal.showModal());
+        }
+
+        if (closeCreateModalBtn && createModal) {
+            closeCreateModalBtn.addEventListener('click', () => createModal.close());
+        }
+
+        if (createModal) {
+            createModal.addEventListener('click', (event) => {
+                const rect = createModal.getBoundingClientRect();
+                const inDialog =
+                    event.clientX >= rect.left &&
+                    event.clientX <= rect.right &&
+                    event.clientY >= rect.top &&
+                    event.clientY <= rect.bottom;
+
+                if (!inDialog) {
+                    createModal.close();
+                }
+            });
+        }
+    </script>
+</body>
+</html>
