@@ -1,4 +1,11 @@
-# README - Cuentas
+## Sistema de Gestión Bancaria
+
+## Problema a resolver
+
+Desarrollar **"Banco Digital"**, un sistema bancario simple que permita:
+
+- Crear cuentas bancarias
+- Transferir dinero entre cuentas
 
 ## Propósito
 
