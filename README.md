@@ -129,3 +129,25 @@ YYYY-MM-DD
 | Documentación | 10% |
 
 ---
+
+
+## Patrones Aplicados
+
+### Arquitectura Hexagonal (Ports & Adapters)
+Se separa el sistema en tres zonas:
+- Dominio: entidades y reglas del negocio.
+- Aplicación: casos de uso y puertos.
+- Infraestructura: adaptadores de entrada/salida y configuración técnica.
+
+Esto permite desacoplar la lógica de negocio de frameworks, base de datos y detalles de interfaz.
+
+### Patrón Adapter
+Se implementan adaptadores para conectar el núcleo con tecnologías externas:
+- Adaptadores de entrada: REST API y MVC (Thymeleaf).
+- Adaptadores de salida: repositorios JPA para persistencia en H2.
+
+Con esto, los casos de uso se mantienen iguales aunque cambie el canal de entrada o el mecanismo de persistencia.
+
+### Patrón Singleton
+Spring gestiona los componentes como singleton por defecto (una instancia por bean en el contexto de la aplicación).
+La configuración centralizada en la clase de configuración garantiza reutilización y consistencia de dependencias.

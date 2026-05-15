@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion de Cuentas</title>
+    <link rel="stylesheet" th:href="@{/css/cuentas.css}">
+</head>
+<body>
+    <main class="page">
+        <header class="hero">
+            <h1>Gestion de Cuentas</h1>
+            <p>Crea cuentas por nombre de cliente y consulta el saldo por nombre.</p>
+        </header>
+
+        <section class="grid">
+            <article class="card">
+                <h2>Crear cuenta</h2>
+                <p>Registra una nueva cuenta indicando nombre del cliente y saldo inicial.</p>
+                <form method="post" th:action="@{/cuentas}" th:object="${cuentaForm}" class="form">
+                    <label>
+                        Nombre
+                        <input type="text" th:field="*{nombre}" required minlength="3" placeholder="Ejemplo: Juan Perez">
+                    </label>
+                    <label>
+                        Saldo
+                        <input type="number" th:field="*{saldo}" min="0" step="0.01" required placeholder="0.00">
+                    </label>
+                    <button type="submit">Crear cuenta</button>
+                </form>
+            </article>
+
+            <article class="card">
+                <h2>Consultar saldo por nombre</h2>
+                <p>Busca un cliente por nombre exacto y revisa sus cuentas.</p>
+                <form method="get" th:action="@{/cuentas}" class="form search-form">
+                    <label>
+                        Nombre
+                        <input type="text" name="nombre" th:value="${filtroNombre}" required placeholder="Ejemplo: Juan Perez">
+                    </label>
+                    <div class="actions">
+                        <button type="submit">Buscar saldo</button>
+                        <a th:href="@{/cuentas}" class="secondary-btn">Limpiar</a>
+                    </div>
+                </form>
+            </article>
+
+            <article class="card transfer-card">
+                <h2>Transferir entre cuentas</h2>
+                <p>Ingresa la cuenta origen, la cuenta destino, el monto y la comisión.</p>
+                <form method="post" th:action="@{/cuentas/transferencia}" th:object="${transferenciaForm}" class="form">
+                    <label>
+                        Cuenta origen
+                        <input type="text" th:field="*{cuentaOrigen}" required placeholder="00000001">
+                    </label>
+                    <label>
+                        Cuenta destino
+                        <input type="text" th:field="*{cuentaDestino}" required placeholder="00000002">
+                    </label>
+                    <label>
+                        Monto
+                        <input type="number" th:field="*{monto}" min="0.01" step="0.01" required placeholder="0.00">
+                    </label>
+                    <label>
+                        Comisión
+                        <input type="number" th:field="*{comision}" min="0" step="0.01" required placeholder="0.00">
+                    </label>
+                    <button type="submit">Realizar transferencia</button>
+                </form>
+            </article>
+        </section>
+
+        <section class="card alerts">
+            <p class="message ok" th:if="${successMessage}" th:text="${successMessage}"></p>
+            <p class="message error" th:if="${errorMessage}" th:text="${errorMessage}"></p>
+        </section>
+
+        <section class="card" th:if="${clienteEncontrado}">
+            <h2>Resultado para: <span th:text="${clienteEncontrado}">Cliente</span></h2>
+            <p class="total">Saldo total: <strong th:text="'S/ ' + ${#numbers.formatDecimal(saldoTotal, 1, 'COMMA', 2, 'POINT')}">S/ 0.00</strong></p>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cuenta</th>
+                            <th>Saldo</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:if="${#lists.isEmpty(cuentas)}">
+                            <td colspan="3">El cliente no tiene cuentas registradas.</td>
+                        </tr>
+                        <tr th:each="cuenta : ${cuentas}">
+                            <td th:text="${cuenta.numeroCuenta}">00000001</td>
+                            <td th:text="'S/ ' + ${#numbers.formatDecimal(cuenta.saldo, 1, 'COMMA', 2, 'POINT')}">S/ 0.00</td>
+                            <td th:text="${cuenta.estado}">ACTIVO</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

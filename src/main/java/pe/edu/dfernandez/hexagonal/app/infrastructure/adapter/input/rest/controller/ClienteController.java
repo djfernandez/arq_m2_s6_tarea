@@ -44,9 +44,8 @@ public class ClienteController {
 
     @PostMapping
     public ResponseEntity<ClienteResponse> createCliente(@RequestBody ClienteRequest request) {
-
+        log.info("Recibida solicitud para crear cliente: {}", request);
         try {
-            log.info("Recibida solicitud para crear cliente: {}", request);
             Cliente clienteDomain = clienteMapper.toDomain(request);
             Cliente createdCliente = createClienteUseCase.execute(clienteDomain);
 
@@ -72,8 +71,8 @@ public class ClienteController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ClienteResponse> getCliente(@PathVariable Long id) {
+        log.info("Recibida solicitud para obtener cliente con ID: {}", id);
         try {
-            log.info("Recibida solicitud para obtener cliente con ID: {}", id);
             Cliente cliente = findClienteUseCase.findClienteById(id);
             if (cliente == null) {
                 log.warn("Cliente con ID {} no encontrado", id);
@@ -93,8 +92,8 @@ public class ClienteController {
 
     @GetMapping
     public ResponseEntity<List<ClienteResponse>> getAllClientes() {
-        try {
-            log.info("Recibida solicitud para obtener todos los clientes");
+        log.info("Recibida solicitud para obtener todos los clientes");
+        try {            
             List<Cliente> clientes = findClienteUseCase.findAllClientes();
             log.info(clientes.toString());
             List<ClienteResponse> response = this.clienteMapper.toResponse(clientes);
@@ -108,8 +107,8 @@ public class ClienteController {
 
     @GetMapping("/search")
     public ResponseEntity<List<ClienteResponse>> searchClientesByNombre(@RequestParam String nombre) {
-        try {
-            log.info("Recibida solicitud para buscar clientes por nombre: {}", nombre);
+        log.info("Recibida solicitud para buscar clientes por nombre: {}", nombre);
+        try {                
             List<Cliente> clientes = findClienteUseCase.findClientesByNombre(nombre);
             List<ClienteResponse> response = clienteMapper.toResponse(clientes);
             log.info("Clientes encontrados con nombre '{}': {}", nombre, clientes.size());
@@ -125,8 +124,8 @@ public class ClienteController {
 
     @PutMapping("/{id}")
     public ResponseEntity<ClienteResponse> updateCliente(@PathVariable Long id, @RequestBody ClienteRequest request) {
-        try {
-            log.info("Recibida solicitud para actualizar cliente con ID: {}", id);
+        log.info("Recibida solicitud para actualizar cliente con ID: {}", id);
+        try {            
             Cliente clienteDomain = clienteMapper.toDomain(request);
             Cliente updatedCliente = updateClienteUseCase.execute(id, clienteDomain);
 
@@ -154,8 +153,8 @@ public class ClienteController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCliente(@PathVariable Long id) {
-        try {
-            log.info("Recibida solicitud para eliminar cliente con ID: {}", id);
+        log.info("Recibida solicitud para eliminar cliente con ID: {}", id);
+        try {            
             deleteClienteUseCase.execute(id);
             log.info("Cliente con ID {} eliminado exitosamente", id);
             return ResponseEntity.noContent().build();

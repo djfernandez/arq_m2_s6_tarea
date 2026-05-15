@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:8080/api
 
-### Crear cuenta
+### Crear cuenta 1
 POST {{baseUrl}}/cuentas
 content-type: application/json
 
@@ -9,7 +9,7 @@ content-type: application/json
     "saldo": 1000
 }
 
-### Crear cuenta
+### Crear cuenta 2
 POST {{baseUrl}}/cuentas
 content-type: application/json
 
@@ -18,11 +18,11 @@ content-type: application/json
     "saldo": 150
 }
 
-### Listar todo
+### Listar todas las cuentas
 GET {{baseUrl}}/cuentas
 content-type: application/json
 
-### Listar todo
+### Listar cuentas por saldo
 GET {{baseUrl}}/cuentas/saldo
 content-type: application/json
 
@@ -30,7 +30,7 @@ content-type: application/json
     "nombre": "Juan Perez"
 }
 
-### Listar todo
+### Listar cuentas por saldo
 GET {{baseUrl}}/cuentas/saldo
 content-type: application/json
 
@@ -38,7 +38,7 @@ content-type: application/json
     "nombre": "Carlos Lopez"
 }
 
-### Crear transacción
+### Crear transacción 1
 POST {{baseUrl}}/transacciones
 content-type: application/json
 
@@ -46,6 +46,32 @@ content-type: application/json
     "cuenta_origen_id": 1,
     "cuenta_destino_id": 2,
     "monto": 50,
+    "comision": 1.5,
+    "tipo": "TRANSFERENCIA",
+    "descripcion": "Pago de servicios"
+}
+
+### Crear transacción 2
+POST {{baseUrl}}/transacciones
+content-type: application/json
+
+{
+    "cuenta_origen_id": 1,
+    "cuenta_destino_id": 2,
+    "monto": 50,
+    "comision": 1.5,
+    "tipo": "TRANSFERENCIA",
+    "descripcion": "Pago de servicios"
+}
+
+### Crear transacción 3
+POST {{baseUrl}}/transacciones
+content-type: application/json
+
+{
+    "cuenta_origen_id": 1,
+    "cuenta_destino_id": 2,
+    "monto": 1500,
     "comision": 1.5,
     "tipo": "TRANSFERENCIA",
     "descripcion": "Pago de servicios"

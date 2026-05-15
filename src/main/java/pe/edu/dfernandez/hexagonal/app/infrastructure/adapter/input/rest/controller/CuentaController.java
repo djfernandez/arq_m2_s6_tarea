@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import pe.edu.dfernandez.hexagonal.app.application.port.input.Cliente.FindClienteUseCase;
 import pe.edu.dfernandez.hexagonal.app.application.port.input.Cuenta.CreateCuentaUseCase;
 import pe.edu.dfernandez.hexagonal.app.application.port.input.Cuenta.FindCuentaUseCase;
-import pe.edu.dfernandez.hexagonal.app.application.port.input.Transaccion.FindTransaccionUseCase;
+import pe.edu.dfernandez.hexagonal.app.domain.exception.InvalidCuentaDataException;
 import pe.edu.dfernandez.hexagonal.app.domain.model.Cliente;
 import pe.edu.dfernandez.hexagonal.app.domain.model.Cuenta;
 import pe.edu.dfernandez.hexagonal.app.infrastructure.adapter.input.rest.dto.ClienteRequest;
@@ -35,39 +35,46 @@ public class CuentaController {
     private final FindClienteUseCase findClienteUseCase;
     private final CreateCuentaUseCase createCuentaUseCase;
     private final FindCuentaUseCase findCuentaUseCase;
-    private final FindTransaccionUseCase findTransaccionUseCase;
+    // private final FindTransaccionUseCase findTransaccionUseCase;
     private final CuentaMapper cuentaMapper;
 
     @PostMapping
     public ResponseEntity<CuentaResponse> createCuenta(@RequestBody CuentaCrearRequest request) {
-
         log.info("Recibida solicitud para crear una cuenta");
-        Cliente cliente = findClienteUseCase.findClienteByNombreIgnoreCase(request.getNombre());
+        try {            
+            Cliente cliente = findClienteUseCase.findClienteByNombreIgnoreCase(request.getNombre());
 
-        if (cliente == null) {
-            log.warn("No se encontró ningún cliente con el nombre: {}", request.getNombre());
-            return ResponseEntity.notFound().build();
+            if (cliente == null) {
+                log.warn("No se encontró ningún cliente con el nombre: {}", request.getNombre());
+                return ResponseEntity.notFound().build();
+            }
+
+            if (request.getSaldo() == null || request.getSaldo().compareTo(BigDecimal.ZERO) < 0) {
+                log.warn("Saldo inválido para la cuenta: {}", request.getSaldo());
+                return ResponseEntity.badRequest().build();
+            }
+
+            log.info("Cliente encontrado: {}", cliente.toString());
+
+            CuentaRequest cuentaRequest = CuentaRequest.builder()
+                    .cliente_id(cliente.getId())
+                    .numeroCuenta(findCuentaUseCase.generarNumeroCuenta())
+                    .saldo(request.getSaldo())
+                    .estado("ACTIVO") // O el estado que corresponda según tu lógica de negocio
+                    .build();
+
+            log.info("Creando cuenta con los siguientes datos: {}", cuentaRequest.toString());
+            Cuenta cuentaMap = cuentaMapper.toDomain(cuentaRequest);
+            log.info("Creando cuentaMAP con los siguientes datos: {}", cuentaMap.toString());
+            Cuenta cuenta = createCuentaUseCase.execute(cuentaMap);
+            return ResponseEntity.ok(cuentaMapper.toResponse(cuenta));
+        } catch (InvalidCuentaDataException e) {
+            log.error("Datos de cuenta inválidos: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(null);
+        } catch (Exception e) {
+            log.error("Error al crear cuenta", e);
+            return ResponseEntity.internalServerError().build();
         }
-
-        if (request.getSaldo() == null || request.getSaldo().compareTo(BigDecimal.ZERO) < 0) {
-            log.warn("Saldo inválido para la cuenta: {}", request.getSaldo());
-            return ResponseEntity.badRequest().build();
-        }
-
-        log.info("Cliente encontrado: {}", cliente.toString());
-
-        CuentaRequest cuentaRequest = CuentaRequest.builder()
-                .cliente_id(cliente.getId())
-                .numeroCuenta(findCuentaUseCase.generarNumeroCuenta())
-                .saldo(request.getSaldo())
-                .estado("ACTIVO") // O el estado que corresponda según tu lógica de negocio
-                .build();
-
-        log.info("Creando cuenta con los siguientes datos: {}", cuentaRequest.toString());
-        Cuenta cuentaMap = cuentaMapper.toDomain(cuentaRequest);
-        log.info("Creando cuentaMAP con los siguientes datos: {}", cuentaMap.toString());  
-        Cuenta cuenta = createCuentaUseCase.execute(cuentaMap);
-        return ResponseEntity.ok(cuentaMapper.toResponse(cuenta));
 
     }
 
@@ -88,6 +95,7 @@ public class CuentaController {
 
     @GetMapping("/saldo")
     public ResponseEntity<List<CuentaResponse>> getCuentasBySaldo(@RequestBody ClienteRequest request) {
+        log.info("Recibida solicitud para obtener cuentas por saldo para el cliente: {}", request.getNombre());
         try {
             Cliente cliente = findClienteUseCase.findClienteByNombreIgnoreCase(request.getNombre());
 
@@ -100,22 +108,25 @@ public class CuentaController {
 
             List<Cuenta> cuentas = findCuentaUseCase.findCuentasByClienteId(cliente.getId());
 
-            BigDecimal saldoActualizado = BigDecimal.ZERO;
+            // BigDecimal saldoActualizado = BigDecimal.ZERO;
 
-            for (Cuenta cuenta : cuentas) {
-                BigDecimal totalIngreso = findTransaccionUseCase.totalIngresoTransaccionesByCuentaOrigen(cuenta.getNumeroCuenta());
-                BigDecimal totalRetiro = findTransaccionUseCase.totalRetiroTransaccionesByCuentaOrigen(cuenta.getNumeroCuenta());
-                saldoActualizado = totalIngreso.subtract(totalRetiro);
+            // for (Cuenta cuenta : cuentas) {
+            // BigDecimal totalIngreso =
+            // findTransaccionUseCase.totalIngresoTransaccionesByCuentaOrigen(cuenta.getNumeroCuenta());
+            // BigDecimal totalRetiro =
+            // findTransaccionUseCase.totalRetiroTransaccionesByCuentaOrigen(cuenta.getNumeroCuenta());
+            // saldoActualizado = totalIngreso.subtract(totalRetiro);
 
-                log.info("Cuenta: {}, Total Ingreso: {}, Total Retiro: {}, Saldo Actualizado: {}", cuenta.getNumeroCuenta(), totalIngreso, totalRetiro, saldoActualizado);
-            }
+            // log.info("Cuenta: {}, Total Ingreso: {}, Total Retiro: {}, Saldo Actualizado:
+            // {}", cuenta.getNumeroCuenta(), totalIngreso, totalRetiro, saldoActualizado);
+            // }
 
             List<CuentaResponse> response = this.cuentaMapper.toResponse(cuentas);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             log.error("Error al obtener cuentas por saldo", e);
             return ResponseEntity.internalServerError().build();
-        }       
+        }
     }
 
 }
