@@ -15,6 +15,8 @@ public interface ClienteRepositoryPort {
 
     List<Cliente> findByNombreContaining(String nombre);
 
+    Cliente findByNombreIgnoreCase(String nombre);
+
     void deleteById(Long id);
 
     boolean existsById(Long id);

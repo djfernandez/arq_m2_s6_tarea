@@ -3,6 +3,7 @@ package pe.edu.dfernandez.hexagonal.app.infrastructure.adapter.output.persistenc
 import java.util.List;
 
 import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
@@ -11,16 +12,29 @@ import pe.edu.dfernandez.hexagonal.app.infrastructure.adapter.input.rest.dto.Tra
 import pe.edu.dfernandez.hexagonal.app.infrastructure.adapter.input.rest.dto.TransaccionResponse;
 import pe.edu.dfernandez.hexagonal.app.infrastructure.adapter.output.persistence.entity.TransaccionEntity;
 
+@Mapper(componentModel = "spring")
 public interface TransaccionMapper {
  
     TransaccionMapper INSTANCE = Mappers.getMapper(TransaccionMapper.class);
 
     @BeanMapping(ignoreByDefault = true)
-    Transaccion toDomain(TransaccionEntity entity);
-
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "cuenta_origen_id", source = "cuenta_origen_id")
     @Mapping(target = "cuenta_destino_id", source = "cuenta_destino_id")
     @Mapping(target = "monto", source = "monto")
+    @Mapping(target = "comision", source = "comision")
+    @Mapping(target = "tipo", source = "tipo")
+    @Mapping(target = "descripcion", source = "descripcion")
+    @Mapping(target = "estado", source = "estado")
+    @Mapping(target = "fecha_creacion", source = "fechaCreacion")
+    @Mapping(target = "fecha_actualizacion", source = "fechaActualizacion")
+    Transaccion toDomain(TransaccionEntity entity);
+
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "cuenta_origen_id", source = "cuenta_origen_id")
+    @Mapping(target = "cuenta_destino_id", source = "cuenta_destino_id")
+    @Mapping(target = "monto", source = "monto")
+    @Mapping(target = "comision", source = "comision")
     @Mapping(target = "tipo", source = "tipo")
     @Mapping(target = "descripcion", source = "descripcion")
     @Mapping(target = "estado", source = "estado")
@@ -30,17 +44,19 @@ public interface TransaccionMapper {
     @Mapping(target = "cuenta_origen_id", source = "cuenta_origen_id")
     @Mapping(target = "cuenta_destino_id", source = "cuenta_destino_id")
     @Mapping(target = "monto", source = "monto")
+    @Mapping(target = "comision", source = "comision")
     @Mapping(target = "tipo", source = "tipo")
     @Mapping(target = "descripcion", source = "descripcion")
     @Mapping(target = "estado", source = "estado")
-    @Mapping(target = "fecha_creacion", source = "fecha_creacion")
-    @Mapping(target = "fecha_actualizacion", source = "fecha_actualizacion")
+    @Mapping(target = "fechaCreacion", source = "fecha_creacion")
+    @Mapping(target = "fechaActualizacion", source = "fecha_actualizacion")
     TransaccionEntity toEntity(Transaccion domain);
 
     @Mapping(target = "id", source = "id")
     @Mapping(target = "cuenta_origen_id", source = "cuenta_origen_id")
     @Mapping(target = "cuenta_destino_id", source = "cuenta_destino_id")
     @Mapping(target = "monto", source = "monto")
+    @Mapping(target = "comision", source = "comision")
     @Mapping(target = "tipo", source = "tipo")
     @Mapping(target = "descripcion", source = "descripcion")
     @Mapping(target = "estado", source = "estado")

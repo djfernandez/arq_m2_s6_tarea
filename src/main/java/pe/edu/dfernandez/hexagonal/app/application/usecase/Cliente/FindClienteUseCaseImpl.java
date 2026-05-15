@@ -57,5 +57,17 @@ public class FindClienteUseCaseImpl implements FindClienteUseCase {
         log.info("Se encontraron {} clientes con el nombre {}", clientes.size(), nombre);
         return clientes;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Cliente findClienteByNombreIgnoreCase(String nombre) {
+        log.info("Buscando cliente por nombre (ignorar mayúsculas): {}", nombre);
+
+        if (nombre == null || nombre.isEmpty()) {
+            log.error("El nombre del cliente no puede ser nulo o vacío");
+            throw new InvalidClienteDataException("El nombre del cliente no puede ser nulo o vacío");
+        }
+        return clienteRepository.findByNombreIgnoreCase(nombre);                
+    }
     
 }

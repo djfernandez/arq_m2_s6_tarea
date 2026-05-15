@@ -38,9 +38,6 @@ public interface ClienteMapper {
     @Mapping(target = "nombre", source = "nombre")
     @Mapping(target = "email", source = "email")
     @Mapping(target = "documento", source = "documento")
-    // @Mapping(target = "estado", source = "estado")
-    // @Mapping(target = "fechaCreacion", source = "fecha_creacion")
-    // @Mapping(target = "fechaActualizacion", source = "fecha_actualizacion")
     ClienteEntity toEntity(Cliente domain);
 
     @Mapping(target = "id", source = "id")

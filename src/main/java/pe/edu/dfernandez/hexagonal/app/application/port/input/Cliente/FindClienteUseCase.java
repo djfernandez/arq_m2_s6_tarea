@@ -5,7 +5,8 @@ import java.util.List;
 import pe.edu.dfernandez.hexagonal.app.domain.model.Cliente;
 
 public interface FindClienteUseCase {
-    Cliente findClienteById(Long Id);
+    Cliente findClienteById(Long id);
     List<Cliente> findAllClientes();
     List<Cliente> findClientesByNombre(String nombre);
+    Cliente findClienteByNombreIgnoreCase(String nombre);
 }

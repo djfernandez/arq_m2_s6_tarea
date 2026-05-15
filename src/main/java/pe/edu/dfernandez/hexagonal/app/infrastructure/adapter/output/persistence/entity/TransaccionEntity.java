@@ -11,8 +11,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,13 +28,11 @@ public class TransaccionEntity {
     @Column(name = "transaccion_id")
     private Long id;
     
-    @ManyToOne
-    @JoinColumn(name = "cuenta_origen_id", nullable = false)
-    private CuentaEntity cuentaOrigen;
+    @Column(name = "cuenta_origen_id", nullable = false)
+    private Long cuenta_origen_id;
     
-    @ManyToOne
-    @JoinColumn(name = "cuenta_destino_id", nullable = false)
-    private CuentaEntity cuentaDestino;
+    @Column(name = "cuenta_destino_id", nullable = false)
+    private Long cuenta_destino_id;
     
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal monto;
@@ -51,7 +47,7 @@ public class TransaccionEntity {
     private String descripcion;
     
     @Column(nullable = false, length = 20)
-    private String estado;
+    private String estado = "COMPLETADA";
     
     @CreationTimestamp
     @Column(name = "fecha_creacion", updatable = false, nullable = false)

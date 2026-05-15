@@ -20,6 +20,8 @@ public class TransaccionResponse {
     private Long cuenta_destino_id;
     
     private BigDecimal monto;
+
+    private BigDecimal comision;
     
     private String tipo; // "DEPOSITO" o "RETIRO"
 

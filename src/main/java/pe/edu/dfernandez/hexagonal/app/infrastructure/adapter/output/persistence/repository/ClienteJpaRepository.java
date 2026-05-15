@@ -12,14 +12,18 @@ import pe.edu.dfernandez.hexagonal.app.infrastructure.adapter.output.persistence
 public interface ClienteJpaRepository extends JpaRepository<ClienteEntity, Long> {
 
     Optional<ClienteEntity> findByNombre(String nombre);
+
     boolean existsByNombre(String nombre);
 
     Optional<ClienteEntity> findByEmail(String email);
+
     boolean existsByEmail(String email);
 
     @Query("SELECT c FROM ClienteEntity c WHERE LOWER(c.nombre) LIKE LOWER(CONCAT('%', :nombre, '%'))")
     List<ClienteEntity> findByNombreContainingIgnoreCase(@Param("nombre") String nombre);
 
-    // Optional<ClienteEntity> findByDocumento(String documento);
+    @Query("SELECT c FROM ClienteEntity c WHERE LOWER(c.nombre) = LOWER(:nombre)")
+    ClienteEntity findByNombreIgnoreCase(@Param("nombre") String nombre);
+
     boolean existsByDocumento(String documento);
 }

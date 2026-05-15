@@ -2,7 +2,6 @@ package pe.edu.dfernandez.hexagonal.app.infrastructure.adapter.output.persistenc
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -12,9 +11,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,9 +28,8 @@ public class CuentaEntity {
     @Column(name = "cuenta_id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "cliente_id", nullable = false)
-    private ClienteEntity cliente;
+    @Column(nullable = false)
+    private Long cliente_id;
 
     @Column(nullable = false, unique = true, length = 20)
     private String numeroCuenta;
@@ -53,9 +48,9 @@ public class CuentaEntity {
     @Column(name = "fecha_actualizacion", nullable = false) 
     private LocalDateTime fechaActualizacion;
     
-    @OneToMany(mappedBy = "cuentaOrigen")
-    private List<TransaccionEntity> transaccionesOrigen;
+    // @OneToMany(mappedBy = "cuentaOrigen")
+    // private List<TransaccionEntity> transaccionesOrigen;
     
-    @OneToMany(mappedBy = "cuentaDestino")
-    private List<TransaccionEntity> transaccionesDestino;
+    // @OneToMany(mappedBy = "cuentaDestino")
+    // private List<TransaccionEntity> transaccionesDestino;
 }

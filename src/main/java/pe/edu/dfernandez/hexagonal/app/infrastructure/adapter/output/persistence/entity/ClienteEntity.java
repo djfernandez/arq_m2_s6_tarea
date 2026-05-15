@@ -48,6 +48,6 @@ public class ClienteEntity {
     @Column(name = "fecha_actualizacion", nullable = false)
     private LocalDateTime fechaActualizacion;
     
-    @OneToMany(mappedBy = "cliente")
-    private List<CuentaEntity> cuentas;
+    // @OneToMany(mappedBy = "cliente")
+    // private List<CuentaEntity> cuentas;
 }

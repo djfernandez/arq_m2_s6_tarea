@@ -11,15 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CuentaRequest {
-
-    private Long id;
-    
-    private Long cliente_id;
-
-    private String numeroCuenta;
-
+public class CuentaCrearRequest {
+    private String nombre;
     private BigDecimal saldo;
-
-    private String estado;
 }

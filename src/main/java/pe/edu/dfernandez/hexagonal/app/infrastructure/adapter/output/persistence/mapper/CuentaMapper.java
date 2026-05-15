@@ -17,20 +17,27 @@ public interface CuentaMapper {
     CuentaMapper INSTANCE = Mappers.getMapper(CuentaMapper.class);
 
     @BeanMapping(ignoreByDefault = true)
-    Cuenta toDomain(CuentaEntity entity);
-
-    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "cliente_id", source = "cliente_id")
     @Mapping(target = "numeroCuenta", source = "numeroCuenta")
     @Mapping(target = "saldo", source = "saldo")
-    @Mapping(target = "estado", source = "estado")                                                            // automáticamente
+    @Mapping(target = "estado", source = "estado")
+    @Mapping(target = "fecha_creacion", source = "fechaCreacion")
+    @Mapping(target = "fecha_actualizacion", source = "fechaActualizacion")
+    Cuenta toDomain(CuentaEntity entity);
+
+    @BeanMapping(ignoreByDefault = true)
+    @Mapping(target = "id", source = "id")
+    @Mapping(target = "cliente_id", source = "cliente_id")
+    @Mapping(target = "numeroCuenta", source = "numeroCuenta")
+    @Mapping(target = "saldo", source = "saldo") // automáticamente
     Cuenta toDomain(CuentaRequest request);
 
     @BeanMapping(ignoreByDefault = true)
     @Mapping(target = "id", source = "id")
+    @Mapping(target = "cliente_id", source = "cliente_id")
     @Mapping(target = "numeroCuenta", source = "numeroCuenta")
     @Mapping(target = "saldo", source = "saldo")
-    @Mapping(target = "estado", source = "estado")
     CuentaEntity toEntity(Cuenta domain);
 
     @BeanMapping(ignoreByDefault = true)
@@ -39,6 +46,8 @@ public interface CuentaMapper {
     @Mapping(target = "numeroCuenta", source = "numeroCuenta")
     @Mapping(target = "saldo", source = "saldo")
     @Mapping(target = "estado", source = "estado")
+    @Mapping(target = "fecha_creacion", source = "fecha_creacion")
+    @Mapping(target = "fecha_actualizacion", source = "fecha_actualizacion")
     CuentaResponse toResponse(Cuenta domain);
 
     List<Cuenta> toDomain(List<CuentaEntity> entities);

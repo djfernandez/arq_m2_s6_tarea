@@ -33,13 +33,6 @@ public class ClienteRepositoryAdapter implements ClienteRepositoryPort {
         log.info("Buscando cliente por ID: {}", id);
         return clienteJpaRepository.findById(id)
                 .map(clienteMapper::toDomain);
-        // if (clienteEntityOpt.isPresent()) {
-        //     log.info("Cliente encontrado: {}", clienteEntityOpt.get());
-        //     return Optional.of(clienteMapper.toDomain(clienteEntityOpt.get()));
-        // } else {
-        //     log.warn("Cliente con ID {} no encontrado", id);
-        //     return Optional.empty();
-        // }
     }
 
     @Override
@@ -47,6 +40,13 @@ public class ClienteRepositoryAdapter implements ClienteRepositoryPort {
         log.info("Buscando todos los clientes");
         var clienteEntities = clienteJpaRepository.findAll();
         return clienteMapper.toDomain(clienteEntities);
+    }
+
+    @Override
+    public Cliente findByNombreIgnoreCase(String nombre) {
+        log.info("Buscando cliente por nombre (ignorando mayúsculas/minúsculas): {}", nombre);
+        var clienteEntity = clienteJpaRepository.findByNombreIgnoreCase(nombre);
+        return clienteMapper.toDomain(clienteEntity);
     }
 
     @Override

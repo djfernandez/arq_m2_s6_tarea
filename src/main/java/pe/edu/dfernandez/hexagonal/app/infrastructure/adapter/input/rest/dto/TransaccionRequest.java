@@ -12,16 +12,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class TransaccionRequest {
-        
-    private Long cuenta_origen_id;    
+
+    private Long id;
+    
+    private Long cuenta_origen_id;
 
     private Long cuenta_destino_id;
-    
+
     private BigDecimal monto;
-    
+
+    private BigDecimal comision;
+
     private String tipo; // "DEPOSITO" o "RETIRO"
 
     private String descripcion;
-    
+
     private String estado;
 }

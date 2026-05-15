@@ -19,7 +19,7 @@ content-type: application/json
 }
 
 ### Actualizar cliente existente
-PUT {{baseUrl}}/clientes/6 HTTP/1.1
+PUT {{baseUrl}}/clientes/5 HTTP/1.1
 content-type: application/json
 
 {
@@ -29,5 +29,5 @@ content-type: application/json
 }
 
 ### Eliminar por id
-DELETE {{baseUrl}}/clientes/6
+DELETE {{baseUrl}}/clientes/5
 content-type: application/json
