@@ -1,153 +1,149 @@
-# TRABAJO FINAL - ARQUITECTURA DE SOFTWARE
-## MÓDULO 2 : Patrones, Estilos Arquitectónicos, Componentes y Conectores
-## Sistema de Gestión Bancaria
+# README - Cuentas
 
----
+## Propósito
 
-## PROBLEMA A RESOLVER
+El controller `CuentaViewController` expone la vista web principal para gestionar cuentas bancarias dentro de la aplicación. Desde esta pantalla se puede:
 
-Desarrollar **"Banco Digital"**, un sistema bancario simple que permita:
+- Crear una cuenta asociada a un cliente existente.
+- Consultar el saldo de un cliente por nombre.
+- Realizar transferencias entre dos cuentas con comisión.
 
-- Crear cuentas bancarias
-- Transferir dinero entre cuentas
+Ubicación del controller: [src/main/java/pe/edu/dfernandez/hexagonal/app/infrastructure/adapter/input/web/controller/CuentaViewController.java](../src/main/java/pe/edu/dfernandez/hexagonal/app/infrastructure/adapter/input/web/controller/CuentaViewController.java)
 
----
+## Vista asociada
 
-##  REQUISITOS FUNCIONALES
+La vista Thymeleaf que consume este controller es:
 
-### 1. Gestión Básica de Cuentas
-- Crear cuenta (nombre, saldo inicial)
-- Consultar saldo
+- [src/main/resources/templates/cuentas.html](../src/main/resources/templates/cuentas.html)
 
-### 2. Operación Principal
-- Transferir dinero entre cuentas
-- Validar saldo suficiente
+Y sus estilos están en:
 
-### 3. Notificación Simple
-- Notificar al cliente después de transferencia
-- Soportar 1 canal (consola)
+- [src/main/resources/static/css/cuentas.css](../src/main/resources/static/css/cuentas.css)
 
----
+## Ruta base
 
-## 🏛️ REQUISITOS ARQUITECTÓNICOS
+El controller trabaja bajo la ruta:
 
-### Arquitectura: HEXAGONAL (Ports & Adapters)
+- `/cuentas`
 
-**Estructura requerida:**
-```
-src/
-├── domain/                 # DOMAIN (sin dependencias externas)
-│   └── model/              # Entidades (Account, Transaction)
-├── application/            # APPLICATION (sin dependencias externas)
-│   ├── ports/
-│   │   ├── input/          # Casos de uso (interfaces)
-│   │   └── output/         # Interfaces para BD, notificaciones.
-│   └── usecases/           # Lógica de negocio
-│
-└── infraestructure/        # INFRAESTRUCTURE
-        ├── adapters/       # Adapter
-        │      ├── input/   # REST API, CLI, etc.
-        │      └── output/  # BD, APIs externas 
-        └── config/         # Patrón Singleton
+## Funcionalidades
 
+### 1. Consultar cuentas y saldo por nombre
+
+**Método:** `GET /cuentas`
+
+**Parámetro opcional:**
+
+- `nombre`: nombre del cliente a consultar.
+
+**Comportamiento:**
+
+- Si no se envía nombre, la vista se muestra vacía.
+- Si se envía un nombre, el controller busca el cliente por nombre ignorando mayúsculas/minúsculas.
+- Si el cliente existe, se obtienen sus cuentas y se calcula el saldo total.
+- Si el cliente no existe, se muestra un mensaje de error en la interfaz.
+
+**Ejemplo:**
+
+```text
+/cuentas?nombre=Juan Perez
 ```
 
-**Regla crítica:** El domain NO debe depender de adapters.
+### 2. Crear una nueva cuenta
 
----
+**Método:** `POST /cuentas`
 
-##  PATRONES DE DISEÑO OBLIGATORIOS
+**Formulario usado:** `CuentaCrearRequest`
 
-### 1. ADAPTER (mínimo 2 implementaciones)
+**Campos:**
 
-### 2. SINGLETON (mínimo 1 implementación)
+- `nombre`: nombre del cliente existente.
+- `saldo`: saldo inicial de la cuenta.
 
----
+**Validaciones:**
 
-##  ADRs OBLIGATORIOS (mínimo 1)
+- El nombre no puede estar vacío.
+- El saldo no puede ser negativo.
+- El cliente debe existir previamente.
 
-Documentar decisiones arquitectónicas en formato Markdown:
+**Resultado:**
 
-### Plantilla ADR:
-```markdown
-# ADR-001: [Título]
+- Se genera un número de cuenta automáticamente.
+- Se crea la cuenta con estado `ACTIVO`.
+- Luego se redirige a la consulta del saldo del cliente para mostrar el resultado actualizado.
 
-## Estado
-Aceptado
+### 3. Transferir entre dos cuentas
 
-## Fecha
-YYYY-MM-DD
+**Método:** `POST /cuentas/transferencia`
 
-## Contexto
-[¿Qué problema resuelve? 2-3 líneas]
+**Formulario usado:** `TransferenciaFormRequest`
 
-## Decisión
-[¿Qué decidiste hacer? 1 línea]
+**Campos:**
 
-## Alternativas Consideradas
-1. Opción A
-2. Opción B - ELEGIDA
+- `cuentaOrigen`: número de cuenta de origen.
+- `cuentaDestino`: número de cuenta de destino.
+- `monto`: monto a transferir.
+- `comision`: comisión a aplicar.
 
-## Consecuencias
-### Positivas 
-- Beneficio 1
-- Beneficio 2
+**Validaciones:**
 
-### Negativas 
-- Desventaja 1
-```
+- Ambas cuentas deben estar informadas.
+- La cuenta de origen y destino no pueden ser la misma.
+- El monto debe ser mayor que cero.
+- La comisión debe ser mayor o igual a cero.
+- Ambas cuentas deben existir.
+- La cuenta de origen debe tener saldo suficiente para cubrir `monto + comision`.
 
-### ADRs Sugeridos:
-1. **ADR-001:** Por qué usar Arquitectura Hexagonal
-2. **ADR-002:** Sistema de persistencia (H2 vs Mysql)
+**Efecto de negocio:**
 
----
+- Se descuenta de la cuenta origen el monto más la comisión.
+- Se acredita el monto en la cuenta destino.
+- Se registra una transacción con tipo `TRANSFERENCIA` y estado `COMPLETADA`.
 
-## 📦 ENTREGABLES
+## Modelos de apoyo
 
-### 1. Código Fuente (70%)
-- Código en repositorio Git
-- Estructura hexagonal clara
-- README con instrucciones básicas de ejecución
+### `CuentaCrearRequest`
 
-### 2. Documentación (30%)
-- **2 ADRs** en formato Markdown (carpeta `/docs`)
-- **Diagrama simple** de arquitectura hexagonal
-- README explicando brevemente los patrones
+Se usa para la creación de cuentas desde la vista.
 
----
+Campos principales:
 
-## 📊 EVALUACIÓN
+- `nombre`
+- `saldo`
 
-| Criterio | Peso |
-|----------|------|
-| Arquitectura Hexagonal (separación correcta) | 25% |
-| Patrón Adapter (2 implementaciones) | 25% |
-| Patrón Singleton (1 implementación) | 15% |
-| ADRs ( documento ) | 15% |
-| Funcionalidad completa | 10% |
-| Documentación | 10% |
+### `TransferenciaFormRequest`
 
----
+Se usa para capturar los datos de la transferencia.
 
+Campos principales:
 
-## Patrones Aplicados
+- `cuentaOrigen`
+- `cuentaDestino`
+- `monto`
+- `comision`
 
-### Arquitectura Hexagonal (Ports & Adapters)
-Se separa el sistema en tres zonas:
-- Dominio: entidades y reglas del negocio.
-- Aplicación: casos de uso y puertos.
-- Infraestructura: adaptadores de entrada/salida y configuración técnica.
+## Flujo de uso recomendado
 
-Esto permite desacoplar la lógica de negocio de frameworks, base de datos y detalles de interfaz.
+1. Abrir la vista `/cuentas`.
+2. Crear una cuenta para un cliente que ya exista en el sistema.
+3. Consultar por nombre para ver el saldo total y las cuentas asociadas.
+4. Usar la sección de transferencia para mover dinero entre dos cuentas.
 
-### Patrón Adapter
-Se implementan adaptadores para conectar el núcleo con tecnologías externas:
-- Adaptadores de entrada: REST API y MVC (Thymeleaf).
-- Adaptadores de salida: repositorios JPA para persistencia en H2.
+## Reglas importantes
 
-Con esto, los casos de uso se mantienen iguales aunque cambie el canal de entrada o el mecanismo de persistencia.
+- Este controller no crea clientes.
+- Antes de crear una cuenta, el cliente debe existir.
+- Antes de transferir, ambas cuentas deben existir y la cuenta origen debe tener saldo suficiente.
+- La comisión es obligatoria en la transferencia y forma parte del débito total de la cuenta origen.
 
-### Patrón Singleton
-Spring gestiona los componentes como singleton por defecto (una instancia por bean en el contexto de la aplicación).
-La configuración centralizada en la clase de configuración garantiza reutilización y consistencia de dependencias.
+## Relación con otros controllers
+
+El controller web de cuentas reutiliza la lógica de aplicación existente para:
+
+- Buscar clientes.
+- Buscar cuentas.
+- Crear cuentas.
+- Actualizar cuentas.
+- Crear transacciones.
+
+Eso mantiene la interfaz web alineada con el núcleo de la arquitectura hexagonal.
