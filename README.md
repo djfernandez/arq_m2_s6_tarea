@@ -7,6 +7,29 @@ Desarrollar **"Banco Digital"**, un sistema bancario simple que permita:
 - Crear cuentas bancarias
 - Transferir dinero entre cuentas
 
+## Diagrama C4 Simplificado (Contenedores)
+
+```mermaid
+flowchart
+    A[Usuario]
+    B[Sistema Banco Digital]
+
+    subgraph B[Sistema Banco Digital]
+        UI[Contenedor Web MVC<br/>Thymeleaf]
+        API[Contenedor API REST<br/>Spring Web]
+        APP[Contenedor Aplicación<br/>Casos de Uso + Puertos]
+        INFRA[Contenedor Persistencia<br/>JPA Adaptadores]
+        DB[(H2 Database)]
+    end
+
+    A --> UI
+    A --> API
+    UI --> APP
+    API --> APP
+    APP --> INFRA
+    INFRA --> DB
+```
+
 ## Propósito
 
 El controller `CuentaViewController` expone la vista web principal para gestionar cuentas bancarias dentro de la aplicación. Desde esta pantalla se puede:
